@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Clickdera | Text Repeater Pro — Repeat &amp; Multiply Text Instantly</title>
+  <!-- Tailwind + Google Fonts + Material Icons -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <style>
+    /* custom overrides & glass effects */
+    body {
+      background: #f5f7f9;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .signature-gradient {
+      background: linear-gradient(135deg, #0050d4 0%, #7b9cff 100%);
+    }
+    /* custom toggle switch styling (interactive) */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e1;
+      transition: 0.2s ease;
+      border-radius: 999px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s ease;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+      background-color: #0050d4;
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    /* custom transition for toast */
+    .toast-show {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+    }
+    textarea, input {
+      transition: all 0.2s ease;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl shadow-sm">
+  <nav class="flex justify-between items-center px-6 py-4 max-w-full mx-auto">
+    <div class="flex items-center gap-8">
+      <span class="text-2xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-indigo-400 bg-clip-text text-transparent">Clickdera</span>
+      <div class="hidden md:flex gap-6">
+        <a class="text-blue-600 border-b-2 border-blue-600 font-manrope tracking-tight font-semibold py-1" href="#">Tools</a>
+        <a class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1" href="#">Presets</a>
+        <a class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1" href="#">History</a>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="themeToggleBtn" class="p-2 hover:bg-slate-100/50 rounded-lg transition-all active:scale-95">
+        <span class="material-symbols-outlined" data-icon="contrast">contrast</span>
+      </button>
+      <button id="settingsMockBtn" class="p-2 hover:bg-slate-100/50 rounded-lg transition-all active:scale-95">
+        <span class="material-symbols-outlined" data-icon="settings">settings</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Side Navigation (Web Only) -->
+<aside class="h-screen w-64 fixed left-0 top-0 hidden lg:flex flex-col bg-slate-50 p-4 gap-2 pt-24">
+  <div class="px-4 mb-6">
+    <h2 class="text-sm font-bold font-headline uppercase tracking-widest text-on-surface-variant">Clickdera</h2>
+    <p class="text-xs text-on-surface-variant/70">Pro Utility</p>
+  </div>
+  <nav class="flex flex-col gap-1">
+    <a class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl transition-all" href="#">
+      <span class="material-symbols-outlined">rebase_edit</span>
+      <span class="text-sm font-medium">Repeater</span>
+    </a>
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all" href="#">
+      <span class="material-symbols-outlined">swap_horiz</span>
+      <span class="text-sm font-medium">Reverser</span>
+    </a>
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all" href="#">
+      <span class="material-symbols-outlined">auto_awesome</span>
+      <span class="text-sm font-medium">Stylizer</span>
+    </a>
+    <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all" href="#">
+      <span class="material-symbols-outlined">bar_chart</span>
+      <span class="text-sm font-medium">Stats</span>
+    </a>
+  </nav>
+  <div class="mt-auto p-4 bg-primary/5 rounded-2xl border border-primary/10">
+    <p class="text-xs font-bold text-primary mb-2 uppercase tracking-tight">Pro Features</p>
+    <p class="text-xs text-on-surface-variant mb-3">Unlock unlimited repeating and API access.</p>
+    <button class="w-full py-2 bg-primary text-on-primary rounded-lg text-xs font-bold transition-all active:scale-95 shadow-lg shadow-primary/20">Upgrade to Pro</button>
+  </div>
+</aside>
+
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-24 pb-12 px-6 md:px-12 min-h-screen max-w-7xl mx-auto">
+  <!-- Header Section -->
+  <header class="mb-12 max-w-3xl">
+    <h1 class="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-surface leading-none mb-4">
+      Text Repeater Tool – <span class="text-primary">Repeat Text Instantly</span>
+    </h1>
+    <p class="text-on-surface-variant text-lg max-w-xl">
+      A high-performance utility designed for rapid text multiplication, formatted for developers, social media, and power users.
+    </p>
+  </header>
+
+  <!-- Tool Interface Grid -->
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+    <!-- Left Column: Inputs & Options -->
+    <div class="xl:col-span-7 space-y-8">
+      <!-- Input Card -->
+      <section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/10">
+        <div class="flex justify-between items-center mb-4">
+          <label class="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">edit_note</span>
+            Source Material
+          </label>
+          <span id="charCounter" class="text-xs font-medium text-on-surface-variant bg-surface-container-low px-2 py-1 rounded-md">Characters: 0</span>
+        </div>
+        <textarea id="sourceText" class="w-full h-48 bg-surface-container-low border-none rounded-xl p-4 text-on-surface placeholder-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 transition-all resize-none font-body" placeholder="Enter your text here... (e.g., 'Hello world!' or any message)"></textarea>
+        <div class="mt-6 flex flex-col sm:flex-row items-center gap-4">
+          <div class="w-full sm:w-1/3">
+            <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">Repeat Count</label>
+            <input id="repeatCount" class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 font-bold text-primary focus:ring-2 focus:ring-primary/20" type="number" value="10" min="1" max="500">
+          </div>
+          <div class="w-full sm:flex-1 grid grid-cols-2 gap-3 mt-4 sm:mt-0">
+            <button id="generateBtn" class="signature-gradient text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-primary/20">
+              <span class="material-symbols-outlined text-xl">rocket_launch</span>
+              Generate
+            </button>
+            <button id="clearBtn" class="bg-surface-container-high text-on-surface py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:bg-surface-container-highest active:scale-95">
+              <span class="material-symbols-outlined text-xl">mop</span>
+              Clear
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Options Card (Bento Style) - fully functional toggles -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+              <span class="material-symbols-outlined">format_list_numbered</span>
+            </div>
+            <span class="text-sm font-semibold">Add Numbering</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleNumbering">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+              <span class="material-symbols-outlined">mood</span>
+            </div>
+            <span class="text-sm font-semibold">Emoji Support</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleEmoji">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">send</span>
+            </div>
+            <span class="text-sm font-semibold">WhatsApp Ready</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleWhatsapp">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">space_bar</span>
+            </div>
+            <span class="text-sm font-semibold">Add Spaces</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleSpaces">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column: Output & Actions -->
+    <div class="xl:col-span-5 space-y-6">
+      <!-- Output Container -->
+      <section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/10 h-full flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+          <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">output</span>
+            Generated Result
+          </label>
+          <div class="flex gap-2">
+            <button id="copyBtn" class="p-2 hover:bg-surface-container-low rounded-lg transition-all" title="Copy to Clipboard">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+            <button id="downloadBtn" class="p-2 hover:bg-surface-container-low rounded-lg transition-all" title="Download Text File">
+              <span class="material-symbols-outlined">download</span>
+            </button>
+          </div>
+        </div>
+        <div class="relative flex-1 min-h-[400px]">
+          <textarea id="outputArea" class="absolute inset-0 w-full h-full bg-surface-container-low/50 border-none rounded-xl p-4 text-on-surface-variant font-mono text-sm resize-none focus:ring-0 cursor-default" placeholder="Output will appear here..." readonly></textarea>
+        </div>
+        <!-- Share Actions -->
+        <div class="mt-6 space-y-3">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant px-1">One-Click Share</p>
+          <div class="grid grid-cols-2 gap-3">
+            <button id="shareWhatsappBtn" class="flex items-center justify-center gap-2 py-3 bg-[#25D366]/10 text-[#25D366] font-bold rounded-xl hover:bg-[#25D366]/20 transition-all active:scale-95">
+              <span class="material-symbols-outlined text-xl">chat</span>
+              WhatsApp
+            </button>
+            <button id="shareTelegramBtn" class="flex items-center justify-center gap-2 py-3 bg-[#0088cc]/10 text-[#0088cc] font-bold rounded-xl hover:bg-[#0088cc]/20 transition-all active:scale-95">
+              <span class="material-symbols-outlined text-xl">send</span>
+              Telegram
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Copy Toast Notification -->
+  <div id="toastMsg" class="fixed bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-inverse-surface text-white px-6 py-3 rounded-full shadow-2xl z-[100] opacity-0 pointer-events-none transition-all duration-500 transform translate-y-4">
+    <span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+    <span class="text-sm font-semibold tracking-tight">Copied to clipboard successfully!</span>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full py-8 mt-20 border-t border-slate-100 bg-slate-50">
+  <div class="flex flex-col md:flex-row justify-between items-center px-8 gap-4 max-w-full">
+    <p class="text-xs uppercase tracking-widest font-bold text-slate-400">© 2024 Clickdera Editorial Utility</p>
+    <div class="flex gap-8">
+      <a class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all" href="#">Terms</a>
+      <a class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all" href="#">Support</a>
+      <a class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all" href="#">API</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile Bottom Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full glass-panel border-t border-outline-variant/10 px-6 py-3 flex justify-between items-center z-50">
+  <button class="flex flex-col items-center gap-1 text-primary">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">rebase_edit</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Tools</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">auto_awesome</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Presets</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">history</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">History</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Account</span>
+  </button>
+</nav>
+
+<script>
+  (function() {
+    // DOM elements
+    const sourceTextarea = document.getElementById('sourceText');
+    const repeatCountInput = document.getElementById('repeatCount');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const outputArea = document.getElementById('outputArea');
+    const charCounterSpan = document.getElementById('charCounter');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // Toggle states
+    const toggleNumbering = document.getElementById('toggleNumbering');
+    const toggleEmoji = document.getElementById('toggleEmoji');
+    const toggleWhatsapp = document.getElementById('toggleWhatsapp');
+    const toggleSpaces = document.getElementById('toggleSpaces');
+    
+    // share buttons
+    const shareWhatsapp = document.getElementById('shareWhatsappBtn');
+    const shareTelegram = document.getElementById('shareTelegramBtn');
+    
+    // helper: show toast
+    function showToast(message = "Copied to clipboard successfully!") {
+      const toastSpan = toastMsg.querySelector('span:last-child');
+      if(toastSpan) toastSpan.innerText = message;
+      toastMsg.classList.add('toast-show');
+      setTimeout(() => {
+        toastMsg.classList.remove('toast-show');
+      }, 2500);
+    }
+    
+    // update character count
+    function updateCharCount() {
+      const len = sourceTextarea.value.length;
+      charCounterSpan.innerText = `Characters: ${len}`;
+    }
+    sourceTextarea.addEventListener('input', updateCharCount);
+    updateCharCount();
+
+    // core repeating function respecting all toggles
+    function generateRepeatedText() {
+      let baseText = sourceTextarea.value;
+      let repeatTimes = parseInt(repeatCountInput.value, 10);
+      if (isNaN(repeatTimes) || repeatTimes < 1) repeatTimes = 1;
+      if (repeatTimes > 1000) repeatTimes = 1000; // safety cap
+      if (baseText.trim() === "" && !toggleEmoji.checked) {
+        outputArea.value = "⚠️ Please enter some text above.";
+        return;
+      }
+      if (baseText === "") baseText = " "; // fallback for emoji-only mode? but keep functional.
+      
+      let finalOutput = "";
+      const addNumbering = toggleNumbering.checked;
+      const addSpaces = toggleSpaces.checked;
+      const whatsappReady = toggleWhatsapp.checked;
+      const emojiEnabled = toggleEmoji.checked;
+      
+      // optional emoji injection: if enabled, we'll append a random fun emoji per line? Better: add a small emoji prefix/suffix per iteration for delight
+      // actually "Emoji Support" means add a cool emoji after each repeated block? For best UX: add per line a chosen smiley
+      const emojiList = ["🔥", "✨", "💎", "🚀", "⭐", "💡", "🎯", "📢", "✅", "💬"];
+      
+      for (let i = 1; i <= repeatTimes; i++) {
+        let line = baseText;
+        // numbering logic
+        if (addNumbering) {
+          line = `${i}. ${line}`;
+        }
+        // Emoji support: append or prepend a fun emoji? We'll add after numbering or at the end of line
+        if (emojiEnabled) {
+          const randomEmoji = emojiList[Math.floor(Math.random() * emojiList.length)];
+          line = `${line} ${randomEmoji}`;
+        }
+        // spaces logic: if add spaces we add two spaces before newline? better: add extra newline or double spaces? typical: add line break + space. Actually "Add Spaces" could add a blank line or double space. we implement as an extra newline between entries.
+        if (addSpaces && i !== repeatTimes) {
+          line = line + "\n\n";
+        } else if (i !== repeatTimes) {
+          line = line + "\n";
+        } else {
+          line = line; // last line no extra break
+        }
+        finalOutput += line;
+        if (!addSpaces && i !== repeatTimes) finalOutput += "\n";
+        else if (addSpaces && i !== repeatTimes) {
+          // already added \n\n above
+        } else if (!addSpaces && i !== repeatTimes) finalOutput += "\n";
+      }
+      
+      // whatsapp ready: escape special characters? Actually WhatsApp formatting: make text bold? we'll just wrap each line with * or _? Better: add *bold* around each line or just ensure line breaks are friendly. We'll just ensure it's plain text but mention. Keep user-friendly.
+      if (whatsappReady && finalOutput.length > 0) {
+        // convert each line to have a bullet or whatsapp style: add asterisk prefix for highlight. For readability: wrap whole output with * *? not needed. We'll just prefix each line with '👉 ' or add underscore? Simpler: prepend a friendly "📱 WhatsApp ready: " but not modify content too much. 
+        // Best: just let it as is but the toggle indicates formatting for WhatsApp: we'll add line separator with dashes.
+        let lines = finalOutput.split(/\r?\n/);
+        let waLines = lines.map(l => l.trim() !== "" ? `*${l}*` : l);
+        finalOutput = waLines.join("\n");
+      }
+      
+      outputArea.value = finalOutput;
+    }
+    
+    // Generate action
+    generateBtn.addEventListener('click', () => {
+      generateRepeatedText();
+    });
+    
+    // Clear action: clear input, output, reset count to 10, toggles optional but we reset only text fields.
+    clearBtn.addEventListener('click', () => {
+      sourceTextarea.value = "";
+      outputArea.value = "";
+      repeatCountInput.value = "10";
+      updateCharCount();
+      // toggles we do NOT reset to keep user preference, but we can reset if needed? better leave as is.
+      generateRepeatedText(); // reflect cleared output after generating empty
+      outputArea.value = ""; // explicit empty
+    });
+    
+    // on source/count change, we can optionally auto-generate? but let's require generate click to prevent lag. However we add a live preview?
+    // also when toggles change -> regenerate automatically to preview changes? (makes tool snappy)
+    const autoRegenerate = () => {
+      generateRepeatedText();
+    };
+    toggleNumbering.addEventListener('change', autoRegenerate);
+    toggleEmoji.addEventListener('change', autoRegenerate);
+    toggleWhatsapp.addEventListener('change', autoRegenerate);
+    toggleSpaces.addEventListener('change', autoRegenerate);
+    repeatCountInput.addEventListener('input', () => {
+      let val = parseInt(repeatCountInput.value,10);
+      if (val < 1) repeatCountInput.value = 1;
+      if (val > 1000) repeatCountInput.value = 1000;
+      autoRegenerate();
+    });
+    sourceTextarea.addEventListener('input', autoRegenerate);
+    // initial generation to fill empty
+    setTimeout(() => {
+      generateRepeatedText();
+    }, 0);
+    
+    // Copy to clipboard
+    copyBtn.addEventListener('click', async () => {
+      const textToCopy = outputArea.value;
+      if (!textToCopy || textToCopy.trim() === "" || textToCopy === "Output will appear here...") {
+        showToast("Nothing to copy! Generate some text first.");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        showToast("Copied to clipboard successfully!");
+      } catch (err) {
+        showToast("Failed to copy. Manual selection required.");
+      }
+    });
+    
+    // Download as .txt file
+    downloadBtn.addEventListener('click', () => {
+      const content = outputArea.value;
+      if (!content || content === "" || content === "Output will appear here...") {
+        showToast("No content to download. Generate repeated text first.");
+        return;
+      }
+      const blob = new Blob([content], {type: "text/plain"});
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = `clickdera_repeat_${Date.now()}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast("Text file downloaded!");
+    });
+    
+    // WhatsApp share: encodes output text and opens wa.me share? but we need to open whatsapp intent.
+    shareWhatsapp.addEventListener('click', () => {
+      let shareText = outputArea.value;
+      if (!shareText || shareText.trim() === "") {
+        showToast("Generate text before sharing.");
+        return;
+      }
+      const encoded = encodeURIComponent(shareText);
+      window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    });
+    
+    // Telegram share
+    shareTelegram.addEventListener('click', () => {
+      let shareText = outputArea.value;
+      if (!shareText || shareText.trim() === "") {
+        showToast("Generate text before sharing.");
+        return;
+      }
+      const encoded = encodeURIComponent(shareText);
+      window.open(`https://t.me/share/url?url=&text=${encoded}`, '_blank');
+    });
+    
+    // Theme toggle dummy but visual effect: switch between light/dark class on html (we have light class by default)
+    const htmlEl = document.documentElement;
+    const themeBtn = document.getElementById('themeToggleBtn');
+    let isDark = false;
+    themeBtn.addEventListener('click', () => {
+      if (!isDark) {
+        htmlEl.classList.add('dark');
+        htmlEl.classList.remove('light');
+        document.body.style.backgroundColor = "#0b0f10";
+        // modify a few variables quickly to reflect dark-like
+        const allBg = document.querySelectorAll('.bg-surface-container-lowest, .bg-surface-container-low, .bg-slate-50, .bg-surface');
+        allBg.forEach(el => {
+          if(el.classList.contains('bg-surface-container-lowest')) el.style.backgroundColor = "#1e1f22";
+          if(el.classList.contains('bg-surface-container-low')) el.style.backgroundColor = "#2a2c30";
+          if(el.classList.contains('bg-slate-50')) el.style.backgroundColor = "#111314";
+          if(el.classList.contains('bg-surface')) el.style.backgroundColor = "#0f1113";
+        });
+        isDark = true;
+      } else {
+        htmlEl.classList.remove('dark');
+        htmlEl.classList.add('light');
+        document.body.style.backgroundColor = "";
+        const resetBg = document.querySelectorAll('.bg-surface-container-lowest, .bg-surface-container-low, .bg-slate-50, .bg-surface');
+        resetBg.forEach(el => {
+          if(el.classList.contains('bg-surface-container-lowest')) el.style.backgroundColor = "";
+          if(el.classList.contains('bg-surface-container-low')) el.style.backgroundColor = "";
+          if(el.classList.contains('bg-slate-50')) el.style.backgroundColor = "";
+          if(el.classList.contains('bg-surface')) el.style.backgroundColor = "";
+        });
+        isDark = false;
+      }
+    });
+    
+    // settings mock alert
+    document.getElementById('settingsMockBtn').addEventListener('click', () => {
+      showToast("⚙️ Settings panel (coming soon)");
+    });
+    
+    // Upgrade pro toast
+    const proBtn = document.querySelector('.mt-auto .bg-primary');
+    if(proBtn) proBtn.addEventListener('click', () => showToast("✨ Pro version unlocked in demo mode!"));
+    
+    // sidebar upgrade extra click
+    document.querySelectorAll('.bg-primary.text-on-primary.rounded-lg').forEach(btn => {
+      if(btn.innerText.includes('Upgrade')) btn.addEventListener('click', () => showToast("🚀 Pro features preview - full access demo"));
+    });
+    
+    // ensure output textarea is read-only but selectable
+    outputArea.setAttribute('readonly', true);
+    
+    // initial char count
+    updateCharCount();
+  })();
+</script>
+</body>
+</html>

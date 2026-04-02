@@ -1,1 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Clickdera Blog — Text Tools, Tips & Updates</title>
+  <!-- Tailwind + Google Fonts + Material Icons -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed": "#000000",
+            "on-primary": "#f1f2ff",
+            "inverse-surface": "#0b0f10",
+            "primary-dim": "#0046bb",
+            "surface-container": "#e5e9eb",
+            "tertiary": "#006576",
+            "background": "#f5f7f9",
+            "surface-variant": "#d9dde0",
+            "on-tertiary-container": "#004b58",
+            "tertiary-dim": "#005867",
+            "on-secondary-fixed-variant": "#3e32d5",
+            "tertiary-fixed": "#53ddfc",
+            "secondary-fixed": "#cfcdff",
+            "outline": "#747779",
+            "on-primary-fixed-variant": "#00266e",
+            "on-error-container": "#570008",
+            "error-container": "#fb5151",
+            "on-error": "#ffefee",
+            "error-dim": "#9f0519",
+            "surface-container-low": "#eef1f3",
+            "primary": "#0050d4",
+            "on-background": "#2c2f31",
+            "surface-bright": "#f5f7f9",
+            "on-secondary": "#f4f1ff",
+            "outline-variant": "#abadaf",
+            "on-primary-container": "#001e5a",
+            "surface": "#f5f7f9",
+            "surface-tint": "#0050d4",
+            "inverse-primary": "#618bff",
+            "inverse-on-surface": "#9a9d9f",
+            "primary-fixed-dim": "#658eff",
+            "on-tertiary-fixed": "#003640",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#d9dde0",
+            "on-surface": "#2c2f31",
+            "on-tertiary": "#def7ff",
+            "on-surface-variant": "#595c5e",
+            "secondary": "#4a40e0",
+            "error": "#b31b25",
+            "on-secondary-container": "#3424cc",
+            "surface-container-high": "#dfe3e6",
+            "tertiary-fixed-dim": "#40ceed",
+            "on-tertiary-fixed-variant": "#005564",
+            "secondary-container": "#cfcdff",
+            "secondary-fixed-dim": "#c0bdff",
+            "primary-fixed": "#7b9cff",
+            "surface-dim": "#d0d5d8",
+            "tertiary-container": "#53ddfc",
+            "on-secondary-fixed": "#2000b0",
+            "secondary-dim": "#3d30d4",
+            "primary-container": "#7b9cff"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background: #f5f7f9;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .signature-gradient {
+      background: linear-gradient(135deg, #0050d4 0%, #7b9cff 100%);
+    }
+    .toast-show {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+    }
+    .blog-card {
+      transition: all 0.25s ease;
+    }
+    .blog-card:hover {
+      transform: translateY(-4px);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
 
+<!-- Top Navigation Bar (consistent with main tool) -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 backdrop-blur-xl shadow-sm">
+  <nav class="flex justify-between items-center px-6 py-4 max-w-full mx-auto">
+    <div class="flex items-center gap-8">
+      <a href="../" class="text-2xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-indigo-400 bg-clip-text text-transparent hover:opacity-90 transition">Clickdera</a>
+      <div class="hidden md:flex gap-6">
+        <a href="../" class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1">Tools</a>
+        <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1">Presets</a>
+        <a href="#" class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1">History</a>
+        <a href="index.html" class="text-blue-600 border-b-2 border-blue-600 font-manrope tracking-tight font-semibold py-1 flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">article</span>
+          Blog
+        </a>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="themeToggleBtn" class="p-2 hover:bg-slate-100/50 rounded-lg transition-all active:scale-95">
+        <span class="material-symbols-outlined">contrast</span>
+      </button>
+      <button id="settingsMockBtn" class="p-2 hover:bg-slate-100/50 rounded-lg transition-all active:scale-95">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Side Navigation (Web Only) -->
+<aside class="h-screen w-64 fixed left-0 top-0 hidden lg:flex flex-col bg-slate-50 p-4 gap-2 pt-24">
+  <div class="px-4 mb-6">
+    <h2 class="text-sm font-bold font-headline uppercase tracking-widest text-on-surface-variant">Clickdera</h2>
+    <p class="text-xs text-on-surface-variant/70">Resources</p>
+  </div>
+  <nav class="flex flex-col gap-1">
+    <a href="../" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all">
+      <span class="material-symbols-outlined">rebase_edit</span>
+      <span class="text-sm font-medium">Repeater Tool</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl transition-all">
+      <span class="material-symbols-outlined">article</span>
+      <span class="text-sm font-medium">Blog Home</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all">
+      <span class="material-symbols-outlined">category</span>
+      <span class="text-sm font-medium">Categories</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all">
+      <span class="material-symbols-outlined">subscriptions</span>
+      <span class="text-sm font-medium">Newsletter</span>
+    </a>
+  </nav>
+  <div class="mt-auto p-4 bg-primary/5 rounded-2xl border border-primary/10">
+    <p class="text-xs font-bold text-primary mb-2 uppercase tracking-tight">Pro Insights</p>
+    <p class="text-xs text-on-surface-variant mb-3">Exclusive tips & tricks for power users.</p>
+    <button class="w-full py-2 bg-primary text-on-primary rounded-lg text-xs font-bold transition-all active:scale-95 shadow-lg shadow-primary/20">Subscribe</button>
+  </div>
+</aside>
+
+<!-- Main Blog Content -->
+<main class="lg:ml-64 pt-24 pb-12 px-6 md:px-12 min-h-screen max-w-7xl mx-auto">
+  <!-- Hero Section -->
+  <div class="mb-12 text-center md:text-left">
+    <h1 class="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-surface leading-tight mb-4">
+      Clickdera<span class="text-primary"> Blog</span>
+    </h1>
+    <p class="text-on-surface-variant text-lg max-w-2xl mx-auto md:mx-0">
+      Ideas, updates, and deep dives into text automation, social media growth, and productivity.
+    </p>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="mb-10 flex flex-col sm:flex-row gap-4 items-center justify-between">
+    <div class="relative w-full sm:w-80">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-lg">search</span>
+      <input type="text" id="searchInput" placeholder="Search articles..." class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/30 outline-none transition">
+    </div>
+    <div class="flex gap-2">
+      <button data-category="all" class="filter-chip active px-4 py-1.5 rounded-full text-sm font-medium bg-primary text-white shadow-sm">All</button>
+      <button data-category="tips" class="filter-chip px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-high text-on-surface-variant hover:bg-primary/10 transition">Tips</button>
+      <button data-category="updates" class="filter-chip px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-high text-on-surface-variant hover:bg-primary/10 transition">Updates</button>
+      <button data-category="social" class="filter-chip px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-high text-on-surface-variant hover:bg-primary/10 transition">Social Media</button>
+    </div>
+  </div>
+
+  <!-- Blog Posts Grid -->
+  <div id="postsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Sample Post 1 -->
+    <article class="blog-card bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 transition-all flex flex-col h-full" data-category="tips">
+      <div class="h-48 bg-gradient-to-br from-primary/20 to-tertiary/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-6xl text-primary/70">repeat</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">Pro Tip</span>
+          <span class="text-xs text-on-surface-variant">Apr 2, 2025</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-2">10 Creative Ways to Use Text Repeater for Marketing</h3>
+        <p class="text-on-surface-variant text-sm mb-4">Discover how repetitive text patterns boost engagement on Instagram, Twitter, and email campaigns.</p>
+        <a href="#" class="mt-auto inline-flex items-center gap-1 text-primary font-semibold text-sm group">Read more <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition">arrow_forward</span></a>
+      </div>
+    </article>
+
+    <!-- Post 2 -->
+    <article class="blog-card bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 flex flex-col h-full" data-category="updates">
+      <div class="h-48 bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-6xl text-secondary/70">rocket_launch</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">Update</span>
+          <span class="text-xs text-on-surface-variant">Mar 28, 2025</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-2">WhatsApp-Ready Mode: New Features Announced</h3>
+        <p class="text-on-surface-variant text-sm mb-4">Bold formatting, instant sharing, and optimized line breaks — now live on the repeater tool.</p>
+        <a href="#" class="mt-auto inline-flex items-center gap-1 text-primary font-semibold text-sm group">Read more <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition">arrow_forward</span></a>
+      </div>
+    </article>
+
+    <!-- Post 3 -->
+    <article class="blog-card bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 flex flex-col h-full" data-category="social">
+      <div class="h-48 bg-gradient-to-br from-emerald-200 to-blue-200 flex items-center justify-center">
+        <span class="material-symbols-outlined text-6xl text-emerald-700">chat</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Social</span>
+          <span class="text-xs text-on-surface-variant">Mar 20, 2025</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-2">Mastering Telegram & WhatsApp Broadcasts with Repetition</h3>
+        <p class="text-on-surface-variant text-sm mb-4">Learn how repeating key messages can increase CTR without being spammy — real case studies.</p>
+        <a href="#" class="mt-auto inline-flex items-center gap-1 text-primary font-semibold text-sm group">Read more <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition">arrow_forward</span></a>
+      </div>
+    </article>
+
+    <!-- Post 4 -->
+    <article class="blog-card bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 flex flex-col h-full" data-category="tips">
+      <div class="h-48 bg-gradient-to-br from-amber-200 to-orange-200 flex items-center justify-center">
+        <span class="material-symbols-outlined text-6xl text-amber-700">format_list_numbered</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">Tip</span>
+          <span class="text-xs text-on-surface-variant">Mar 15, 2025</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-2">Numbered Lists vs. Bullet Points: Which Repeats Better?</h3>
+        <p class="text-on-surface-variant text-sm mb-4">We analyzed engagement metrics for 50,000+ posts — the results might surprise you.</p>
+        <a href="#" class="mt-auto inline-flex items-center gap-1 text-primary font-semibold text-sm group">Read more <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition">arrow_forward</span></a>
+      </div>
+    </article>
+
+    <!-- Post 5 -->
+    <article class="blog-card bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 flex flex-col h-full" data-category="updates">
+      <div class="h-48 bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center">
+        <span class="material-symbols-outlined text-6xl text-purple-700">auto_awesome</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">Update</span>
+          <span class="text-xs text-on-surface-variant">Mar 8, 2025</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-2">Emoji AI: Smart Random Emojis for Viral Content</h3>
+        <p class="text-on-surface-variant text-sm mb-4">Our new intelligent emoji engine picks context-aware icons to boost retention and fun.</p>
+        <a href="#" class="mt-auto inline-flex items-center gap-1 text-primary font-semibold text-sm group">Read more <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition">arrow_forward</span></a>
+      </div>
+    </article>
+
+    <!-- Post 6 -->
+    <article class="blog-card bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 flex flex-col h-full" data-category="social">
+      <div class="h-48 bg-gradient-to-br from-sky-200 to-indigo-200 flex items-center justify-center">
+        <span class="material-symbols-outlined text-6xl text-indigo-700">trending_up</span>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full">Social</span>
+          <span class="text-xs text-on-surface-variant">Feb 28, 2025</span>
+        </div>
+        <h3 class="text-xl font-bold font-headline mb-2">Case Study: How a Small Brand Gained 20k Followers Using Text Loops</h3>
+        <p class="text-on-surface-variant text-sm mb-4">One month experiment with repeated storytelling formats on Threads and X.</p>
+        <a href="#" class="mt-auto inline-flex items-center gap-1 text-primary font-semibold text-sm group">Read more <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition">arrow_forward</span></a>
+      </div>
+    </article>
+  </div>
+
+  <!-- Newsletter Banner -->
+  <div class="mt-16 signature-gradient rounded-2xl p-8 text-white shadow-xl">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+      <div>
+        <h3 class="text-2xl font-black font-headline tracking-tight">Never miss an update</h3>
+        <p class="text-white/80 text-sm max-w-md">Get the latest text tool features and pro strategies directly to your inbox.</p>
+      </div>
+      <div class="flex gap-3 w-full md:w-auto">
+        <input type="email" placeholder="Your email" class="flex-1 md:w-64 px-4 py-2 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none">
+        <button class="bg-white text-primary px-5 py-2 rounded-xl font-bold text-sm hover:shadow-lg transition active:scale-95">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full py-8 mt-20 border-t border-slate-100 bg-slate-50">
+  <div class="flex flex-col md:flex-row justify-between items-center px-8 gap-4 max-w-full">
+    <p class="text-xs uppercase tracking-widest font-bold text-slate-400">© 2025 Clickdera Blog — Text Utility Insights</p>
+    <div class="flex gap-8">
+      <a href="../" class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all">Repeater Tool</a>
+      <a href="#" class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all">Privacy</a>
+      <a href="#" class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile Bottom Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full glass-panel border-t border-outline-variant/10 px-6 py-3 flex justify-between items-center z-50">
+  <a href="../" class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">rebase_edit</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Tools</span>
+  </a>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">auto_awesome</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Presets</span>
+  </button>
+  <a href="index.html" class="flex flex-col items-center gap-1 text-primary">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">article</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Blog</span>
+  </a>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Account</span>
+  </button>
+</nav>
+
+<!-- Toast Notification -->
+<div id="toastMsg" class="fixed bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-inverse-surface text-white px-6 py-3 rounded-full shadow-2xl z-[100] opacity-0 pointer-events-none transition-all duration-500 transform translate-y-4">
+  <span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+  <span class="text-sm font-semibold tracking-tight">Action completed</span>
+</div>
+
+<script>
+  (function() {
+    // Theme Toggle (same as main tool)
+    const htmlEl = document.documentElement;
+    const themeBtn = document.getElementById('themeToggleBtn');
+    let isDark = false;
+    themeBtn.addEventListener('click', () => {
+      if (!isDark) {
+        htmlEl.classList.add('dark');
+        htmlEl.classList.remove('light');
+        document.body.style.backgroundColor = "#0b0f10";
+        const allBg = document.querySelectorAll('.bg-surface-container-lowest, .bg-surface-container-low, .bg-slate-50, .bg-surface');
+        allBg.forEach(el => {
+          if(el.classList.contains('bg-surface-container-lowest')) el.style.backgroundColor = "#1e1f22";
+          else if(el.classList.contains('bg-surface-container-low')) el.style.backgroundColor = "#2a2c30";
+          else if(el.classList.contains('bg-slate-50')) el.style.backgroundColor = "#111314";
+          else if(el.classList.contains('bg-surface')) el.style.backgroundColor = "#0f1113";
+        });
+        isDark = true;
+      } else {
+        htmlEl.classList.remove('dark');
+        htmlEl.classList.add('light');
+        document.body.style.backgroundColor = "";
+        const resetBg = document.querySelectorAll('.bg-surface-container-lowest, .bg-surface-container-low, .bg-slate-50, .bg-surface');
+        resetBg.forEach(el => {
+          el.style.backgroundColor = "";
+        });
+        isDark = false;
+      }
+    });
+
+    // Toast helper
+    function showToast(message) {
+      const toast = document.getElementById('toastMsg');
+      const span = toast.querySelector('span:last-child');
+      if (span) span.innerText = message;
+      toast.classList.add('toast-show');
+      setTimeout(() => toast.classList.remove('toast-show'), 2500);
+    }
+
+    // Settings mock
+    document.getElementById('settingsMockBtn')?.addEventListener('click', () => showToast("⚙️ Blog settings & preferences coming soon"));
+
+    // Search + Filter functionality
+    const searchInput = document.getElementById('searchInput');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const allPosts = document.querySelectorAll('#postsGrid article');
+    let activeCategory = 'all';
+
+    function filterPosts() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      allPosts.forEach(post => {
+        const category = post.getAttribute('data-category');
+        const title = post.querySelector('h3')?.innerText.toLowerCase() || '';
+        const desc = post.querySelector('p')?.innerText.toLowerCase() || '';
+        const matchesCategory = activeCategory === 'all' || category === activeCategory;
+        const matchesSearch = searchTerm === '' || title.includes(searchTerm) || desc.includes(searchTerm);
+        if (matchesCategory && matchesSearch) {
+          post.style.display = '';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+    }
+
+    searchInput.addEventListener('input', filterPosts);
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach(c => {
+          c.classList.remove('bg-primary', 'text-white');
+          c.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+        });
+        chip.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+        chip.classList.add('bg-primary', 'text-white');
+        activeCategory = chip.getAttribute('data-category');
+        filterPosts();
+      });
+    });
+
+    // Subscribe button demo
+    const subscribeBtn = document.querySelector('.signature-gradient button');
+    if (subscribeBtn) {
+      subscribeBtn.addEventListener('click', () => {
+        const emailInput = document.querySelector('.signature-gradient input');
+        if (emailInput && emailInput.value.includes('@')) {
+          showToast(`📬 Thanks! ${emailInput.value} subscribed.`);
+          emailInput.value = '';
+        } else {
+          showToast('Please enter a valid email address.');
+        }
+      });
+    }
+
+    // Sidebar subscribe button
+    const sideSubscribe = document.querySelector('.mt-auto .bg-primary');
+    if (sideSubscribe) sideSubscribe.addEventListener('click', () => showToast('✨ Pro insights preview — check your inbox soon!'));
+
+    // Small effect: Blog card "Read more" prevent default and show toast demo
+    const readLinks = document.querySelectorAll('.blog-card a');
+    readLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast('📖 Full article preview: demo version — stay tuned for launch!');
+      });
+    });
+  })();
+</script>
+</body>
+</html>

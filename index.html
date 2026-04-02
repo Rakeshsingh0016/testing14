@@ -93,6 +93,11 @@
         <a class="text-blue-600 border-b-2 border-blue-600 font-manrope tracking-tight font-semibold py-1" href="#">Tools</a>
         <a class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1" href="#">Presets</a>
         <a class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1" href="#">History</a>
+        <!-- NEW BLOG BUTTON -->
+        <a href="blog/index.html" class="text-slate-500 hover:text-slate-900 transition-colors font-manrope tracking-tight font-semibold py-1 flex items-center gap-1">
+          <span class="material-symbols-outlined text-base">article</span>
+          Blog
+        </a>
       </div>
     </div>
     <div class="flex items-center gap-4">
@@ -128,6 +133,11 @@
     <a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all" href="#">
       <span class="material-symbols-outlined">bar_chart</span>
       <span class="text-sm font-medium">Stats</span>
+    </a>
+    <!-- Sidebar Blog Link (optional, but consistent) -->
+    <a href="blog/index.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-xl transition-all mt-2">
+      <span class="material-symbols-outlined">article</span>
+      <span class="text-sm font-medium">Blog</span>
     </a>
   </nav>
   <div class="mt-auto p-4 bg-primary/5 rounded-2xl border border-primary/10">
@@ -288,6 +298,8 @@
       <a class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all" href="#">Terms</a>
       <a class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all" href="#">Support</a>
       <a class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all" href="#">API</a>
+      <!-- Optional footer blog link -->
+      <a href="blog/index.html" class="text-xs uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600 underline underline-offset-4 transition-all">Blog</a>
     </div>
   </div>
 </footer>
@@ -310,6 +322,11 @@
     <span class="material-symbols-outlined">person</span>
     <span class="text-[10px] font-bold uppercase tracking-tighter">Account</span>
   </button>
+  <!-- Mobile nav blog icon (optional but friendly) -->
+  <a href="blog/index.html" class="flex flex-col items-center gap-1 text-on-surface-variant">
+    <span class="material-symbols-outlined">article</span>
+    <span class="text-[10px] font-bold uppercase tracking-tighter">Blog</span>
+  </a>
 </nav>
 
 <script>
@@ -371,8 +388,7 @@
       const whatsappReady = toggleWhatsapp.checked;
       const emojiEnabled = toggleEmoji.checked;
       
-      // optional emoji injection: if enabled, we'll append a random fun emoji per line? Better: add a small emoji prefix/suffix per iteration for delight
-      // actually "Emoji Support" means add a cool emoji after each repeated block? For best UX: add per line a chosen smiley
+      // optional emoji injection: if enabled, we'll append a random fun emoji per line for delight
       const emojiList = ["🔥", "✨", "💎", "🚀", "⭐", "💡", "🎯", "📢", "✅", "💬"];
       
       for (let i = 1; i <= repeatTimes; i++) {
@@ -381,30 +397,23 @@
         if (addNumbering) {
           line = `${i}. ${line}`;
         }
-        // Emoji support: append or prepend a fun emoji? We'll add after numbering or at the end of line
+        // Emoji support: append random emoji
         if (emojiEnabled) {
           const randomEmoji = emojiList[Math.floor(Math.random() * emojiList.length)];
           line = `${line} ${randomEmoji}`;
         }
-        // spaces logic: if add spaces we add two spaces before newline? better: add extra newline or double spaces? typical: add line break + space. Actually "Add Spaces" could add a blank line or double space. we implement as an extra newline between entries.
+        // spaces logic: if add spaces we add double newline between entries
         if (addSpaces && i !== repeatTimes) {
           line = line + "\n\n";
         } else if (i !== repeatTimes) {
           line = line + "\n";
-        } else {
-          line = line; // last line no extra break
         }
         finalOutput += line;
         if (!addSpaces && i !== repeatTimes) finalOutput += "\n";
-        else if (addSpaces && i !== repeatTimes) {
-          // already added \n\n above
-        } else if (!addSpaces && i !== repeatTimes) finalOutput += "\n";
       }
       
-      // whatsapp ready: escape special characters? Actually WhatsApp formatting: make text bold? we'll just wrap each line with * or _? Better: add *bold* around each line or just ensure line breaks are friendly. We'll just ensure it's plain text but mention. Keep user-friendly.
+      // whatsapp ready: wrap each line with * for bold effect (common WhatsApp formatting)
       if (whatsappReady && finalOutput.length > 0) {
-        // convert each line to have a bullet or whatsapp style: add asterisk prefix for highlight. For readability: wrap whole output with * *? not needed. We'll just prefix each line with '👉 ' or add underscore? Simpler: prepend a friendly "📱 WhatsApp ready: " but not modify content too much. 
-        // Best: just let it as is but the toggle indicates formatting for WhatsApp: we'll add line separator with dashes.
         let lines = finalOutput.split(/\r?\n/);
         let waLines = lines.map(l => l.trim() !== "" ? `*${l}*` : l);
         finalOutput = waLines.join("\n");
@@ -418,19 +427,17 @@
       generateRepeatedText();
     });
     
-    // Clear action: clear input, output, reset count to 10, toggles optional but we reset only text fields.
+    // Clear action: clear input, output, reset count to 10
     clearBtn.addEventListener('click', () => {
       sourceTextarea.value = "";
       outputArea.value = "";
       repeatCountInput.value = "10";
       updateCharCount();
-      // toggles we do NOT reset to keep user preference, but we can reset if needed? better leave as is.
       generateRepeatedText(); // reflect cleared output after generating empty
       outputArea.value = ""; // explicit empty
     });
     
-    // on source/count change, we can optionally auto-generate? but let's require generate click to prevent lag. However we add a live preview?
-    // also when toggles change -> regenerate automatically to preview changes? (makes tool snappy)
+    // auto-regenerate when toggles or source/count changes (instant preview)
     const autoRegenerate = () => {
       generateRepeatedText();
     };
@@ -445,7 +452,7 @@
       autoRegenerate();
     });
     sourceTextarea.addEventListener('input', autoRegenerate);
-    // initial generation to fill empty
+    // initial generation
     setTimeout(() => {
       generateRepeatedText();
     }, 0);
@@ -453,7 +460,7 @@
     // Copy to clipboard
     copyBtn.addEventListener('click', async () => {
       const textToCopy = outputArea.value;
-      if (!textToCopy || textToCopy.trim() === "" || textToCopy === "Output will appear here...") {
+      if (!textToCopy || textToCopy.trim() === "" || textToCopy === "Output will appear here..." || textToCopy === "⚠️ Please enter some text above.") {
         showToast("Nothing to copy! Generate some text first.");
         return;
       }
@@ -468,7 +475,7 @@
     // Download as .txt file
     downloadBtn.addEventListener('click', () => {
       const content = outputArea.value;
-      if (!content || content === "" || content === "Output will appear here...") {
+      if (!content || content === "" || content === "Output will appear here..." || content === "⚠️ Please enter some text above.") {
         showToast("No content to download. Generate repeated text first.");
         return;
       }
@@ -484,10 +491,10 @@
       showToast("Text file downloaded!");
     });
     
-    // WhatsApp share: encodes output text and opens wa.me share? but we need to open whatsapp intent.
+    // WhatsApp share: opens wa.me with encoded text
     shareWhatsapp.addEventListener('click', () => {
       let shareText = outputArea.value;
-      if (!shareText || shareText.trim() === "") {
+      if (!shareText || shareText.trim() === "" || shareText === "⚠️ Please enter some text above.") {
         showToast("Generate text before sharing.");
         return;
       }
@@ -498,7 +505,7 @@
     // Telegram share
     shareTelegram.addEventListener('click', () => {
       let shareText = outputArea.value;
-      if (!shareText || shareText.trim() === "") {
+      if (!shareText || shareText.trim() === "" || shareText === "⚠️ Please enter some text above.") {
         showToast("Generate text before sharing.");
         return;
       }
@@ -506,7 +513,7 @@
       window.open(`https://t.me/share/url?url=&text=${encoded}`, '_blank');
     });
     
-    // Theme toggle dummy but visual effect: switch between light/dark class on html (we have light class by default)
+    // Theme toggle dummy but visual effect: switch between light/dark class on html
     const htmlEl = document.documentElement;
     const themeBtn = document.getElementById('themeToggleBtn');
     let isDark = false;
@@ -515,7 +522,6 @@
         htmlEl.classList.add('dark');
         htmlEl.classList.remove('light');
         document.body.style.backgroundColor = "#0b0f10";
-        // modify a few variables quickly to reflect dark-like
         const allBg = document.querySelectorAll('.bg-surface-container-lowest, .bg-surface-container-low, .bg-slate-50, .bg-surface');
         allBg.forEach(el => {
           if(el.classList.contains('bg-surface-container-lowest')) el.style.backgroundColor = "#1e1f22";
@@ -548,15 +554,12 @@
     const proBtn = document.querySelector('.mt-auto .bg-primary');
     if(proBtn) proBtn.addEventListener('click', () => showToast("✨ Pro version unlocked in demo mode!"));
     
-    // sidebar upgrade extra click
     document.querySelectorAll('.bg-primary.text-on-primary.rounded-lg').forEach(btn => {
       if(btn.innerText.includes('Upgrade')) btn.addEventListener('click', () => showToast("🚀 Pro features preview - full access demo"));
     });
     
     // ensure output textarea is read-only but selectable
     outputArea.setAttribute('readonly', true);
-    
-    // initial char count
     updateCharCount();
   })();
 </script>
